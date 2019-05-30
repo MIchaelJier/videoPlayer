@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <!--视口的设置，让网页能等比例的缩放到对应设备中-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <title>搜索</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <style type="text/css">
+        body{margin: 0}
+        div.search {
+            width:50%;
+            margin:5px auto;
+            padding: 20px 0 5px 0;
+            background: #222;
+            border-radius: 20px;
+            transition: all .5s linear;
+        }
+        div.search:hover {
+            margin:10px auto;
+            padding: 20px 0 10px 0;
+            transition: all .5s linear;
+        }
+        .input-group span{
+            cursor: pointer;
+            background: #000;
+            color: #fff;
+        }
+        /*iphone*/
+        @media screen and (max-width: 768px){
+            div.search:nth-of-type(1) {
+                width:90%;
+            }
+            div.search:nth-of-type(2) {
+                width:80%;
+            }
+        }
+    </style>
+    <script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body style="background-color:#414141">
+<!-- 代码 开始 -->
+<div class="htmlhalf-container">
+    <!--主页 开始-->
+        <nav class="nav navbar-inverse navbar-fixed-top" style="z-index: 100">
+            <div class="container">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="#" class="navbar-brand">J视频</a>
+                </div>
+                <div id="menu" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/homepage">首页</a></li>
+                        <li><a href="/homepage">视频</a></li>
+                        <li class="dropdown active"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            搜索中...<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/findvideo">搜索</a></li>
+                                <li><a href="#" id="findus">关于我们</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" id="name_">
+                            登录<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/selfpage">个人首页</a></li>
+                                <li><a href="/index">登录</a></li>
+                                <li><a href="/register">注册</a></li>
+                                <li id="clear_cookies"><a href="#">注销</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="col-md-12">
+            <div class="search">
+                <div class="search">
+                    <div class="bs-example bs-example-form" role="form">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class="input-group-addon">搜索</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<!-- 代码 结束-->
+</body>
+<script>
+    $(function () {
+        //通用
+        var cl = $('#clear_cookies');
+        if($.cookie('name')){
+            var Uname = $.cookie('name');
+            $('#name_').html(Uname+"<span class=\"caret\"></span>");
+            cl.prev().prev().click(function () {
+                if(confirm("是否注销并退出？")) {
+                    $.cookie('name', '', { expires: -1 });
+                    $.cookie('history', '', { expires: -1 });
+                    window.location.href = "/login";
+                }else{
+                    return false;
+                }
+            });
+        }
+        cl.click(function () {
+            if($.cookie('name')){
+                $.cookie('name', '', { expires: -1 });
+                $.cookie('history', '', { expires: -1 });
+                alert("注销成功");
+                $('#name_').html("登录<span class=\"caret\"></span>");
+                window.location.reload();
+            }else {alert("你还没登录呢")}
+        });
+        cl.prev().prev().prev().click(function () {
+            if(!$.cookie('name')){
+                alert("你还没登录呢");
+                return false;
+            }else {
+                window.location.href = "/selfpage";
+            }
+        });
+        $('#findus').click(function () {
+            var url = '/findus';
+            var name = '关于我们';
+            var iWidth = '300';
+            var iHeight = '50';
+            var iTop = (window.screen.height-30-iHeight)/2;
+            var iLeft = (window.screen.width-10-iWidth)/2;
+            window.open(url,name,'height='+iHeight+',,innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
+            //window.open("findus.html","关于我们","width=300,height=20");
+        });
+        //本页面
+        //简单的隐藏和显示
+        /*$('.input-group input').attr("required", "required");
+        $('.input-group span').click(function () {
+            var text = $(this).prev().val();
+            $(this).prev().val("");
+            $('.caption h3').each(function () {
+                var html_word = $(this).html();
+                if (html_word.indexOf(text)>=0) {
+                    if($(this).parent().parent().parent().hasClass('col-sm-4')){
+                        $(this).parent().parent().parent().css({'display':''});
+                    }else{
+                        $(this).parent().parent().parent().addClass('col-sm-4').addClass('col-sm-2').css({'display':''});
+                    }
+                }else {
+                    $(this).parent().parent().parent().removeClass('col-sm-4').addClass('col-sm-2').css({'display':'none'});
+                }
+            });
+        })*/
+        $('.input-group span').click(function () {
+            var text = $(this).prev().val();
+            if(1){
+                $.ajax({
+                    url:"/find",
+                    data:{vname:text},
+                    async:true,
+                    cache:false,
+                    type:"POST",
+                    success:function(result){
+                        /*alert(result[0].videoname);*/
+                        if(result.length>0){
+                            $('.col-sm-4').remove();
+                            for(var i = 0 ; i < result.length;i++){
+                                $('.col-md-12').append(''+
+                                '<div class="col-sm-4 col-md-2">\n' +
+                                    '                <div class="thumbnail">\n' +
+                                    '                    <a class="lightbox" href="' +result[i].videosrc+ '">\n' +
+                                    '                        <img src="'+ result[i].picsrc +'" alt="">\n' +
+                                    '                    </a>\n' +
+                                    '                    <div class="caption">\n' +
+                                    '                        <h3>' +result[i].videoname+'</h3>\n' +
+                                    '                        <p>' +result[i].videointroduce+'</p>\n' +
+                                    '                        <a href="' +result[i].videosrc+ '" class="btn btn-primary">看视频</a>\n' +
+                                    '                    </div>\n' +
+                                    '                </div>\n' +
+                                    '            </div>')
+                            }
+                        }else{
+                            alert("对不起！没有你想要的视频。");
+                            return false;
+                        }
+                    },
+                    error:function(){
+                        alert("查询失败");
+                    }
+
+                })
+            } else{}
+        });
+    })
+</script>
+</html>
