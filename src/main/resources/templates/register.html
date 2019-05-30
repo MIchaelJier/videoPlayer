@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>登录界面</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/reset.css"/>
+    <style type="text/css">
+        .form-horizontal{
+            background: #fff;
+            padding-bottom: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .form-horizontal .heading{
+            display: block;
+            font-size: 35px;
+            font-weight: 700;
+            padding: 35px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 30px;
+        }
+        .form-horizontal .form-group{
+            padding: 0 40px;
+            margin: 0 0 25px 0;
+            position: relative;
+        }
+        .form-horizontal .form-control{
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            box-shadow: none;
+            padding: 0 20px 0 45px;
+            height: 40px;
+            transition: all 0.3s ease 0s;
+        }
+        .form-horizontal .form-control:focus{
+            background: #e0e0e0;
+            box-shadow: none;
+            outline: 0 none;
+        }
+        .form-horizontal .btn{
+            float: right;
+            font-size: 14px;
+            color: #fff;
+            background: #00b4ef;
+            border-radius: 30px;
+            padding: 10px 25px;
+            border: none;
+            text-transform: capitalize;
+            transition: all 0.5s ease 0s;
+        }
+        .form-horizontal .btn:first-child{
+            float: left;
+        }
+        #user_pic,#em_pic,#repwd_pic,#pwd_pic {
+            position: absolute;
+            left: 55px;
+            top: 15px;
+        }
+        @media only screen and (max-width: 479px){
+            .form-horizontal .form-group{
+                padding: 0 25px;
+            }
+            .form-horizontal .form-group i{
+                left: 45px;
+            }
+            .form-horizontal .btn{
+                padding: 10px 20px;
+            }
+        }
+
+    </style>
+    <script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.backstretch.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        $(function(){
+            //登录验证
+            var ok1=0,ok2=0,ok3=0,ok4=0;
+            $("#register_btn").click(function(){
+                var user = $('#user').val();
+                var password = $('#password').val();
+                var email = $('#email').val();
+                var rep_password = $('#rep_password').val();
+                if(user&&password&&email&&rep_password&&ok1==1&&ok2==1&&ok3==1&&ok4==1){
+                    $.ajax({
+                        url:"/reg",
+                        data:{
+                            name:user,
+                            passwd:password,
+                            email:email,
+                        },
+                        async:true,
+                        cache:false,
+                        type:"POST",
+                        success:function(result){
+                            /* alert(result.name+result.passwd);*/
+                            if(result==1){
+                                alert(result);
+                                console.log('true');
+                                alert('注册成功');
+                                $('#user').val("");
+                                $('#email').val("");
+                                $('#password').val("");
+                                $('#rep_password').val("");
+                            }else if(result==2){
+                                alert("用户名已被注册");
+                                return false;
+                            }else{
+                                alert("注册失败");
+                                return false;
+                            }
+                        }
+                    });
+                }else{
+                    if(!user){
+                        $('.tooltip-show:eq(0)').tooltip('show');
+                    }
+                    if(!password){
+                        $('.tooltip-show:eq(2)').tooltip('show');
+                    }
+                    if(!email){
+                        $('.tooltip-show:eq(1)').tooltip('show');
+                    }
+                    if(!rep_password){
+                        $('.tooltip-show:eq(3)').tooltip('show');
+                    }
+                    return false;
+                }
+            });
+            $('#user').focus(function () {
+                $('.tooltip-show:eq(0)').tooltip('destroy');
+            });
+            $('#password').focus(function () {
+                $('.tooltip-show:eq(2)').tooltip('destroy');
+            });
+            $('#rep_password').focus(function () {
+                $('.tooltip-show:eq(3)').tooltip('destroy');
+            });
+            $('#email').focus(function () {
+                $('.tooltip-show:eq(1)').tooltip('destroy');
+            });
+            $('#goto_login').click(function () {
+                window.location.href = "/index";
+                return false;
+            });
+            $('#user').change(function () {
+                var user=$(this).val().trim();
+                var regeuser= /^[a-zA-Z0-9_-]{4,16}$/; //4到16位（字母，数字，下划线，减号）
+                if(regeuser.test(user)==false&&user) {
+                    $(this).css('border','1px solid red');
+                    $('#user').parent().attr('title',"<h5 style=\'color:red\'><strong>用户名格式错误<br>4到16位（字母/数字/下划线/减号）</strong></h5>");
+                    $('.tooltip-show:eq(0)').tooltip('show');
+                    ok1=0;
+                }else{
+                    $(this).css('border','');
+                    $('#user').parent().attr('title',"<h5 style=\'color:red\'><strong>请输入用户名</strong></h5>");
+                    $('.tooltip-show:eq(0)').tooltip('destroy');
+                    ok1=1;
+                }
+            });
+            $('#email').change(function () {
+                var email=$(this).val().trim();
+                var regemail=/^\w+@\w+(.[a-zA-Z]{2,3}){1,2}$/; //正则表达式
+                if(regemail.test(email)==false&&email) {
+                    $(this).css('border','1px solid red');
+                    $('#email').parent().attr('title',"<h5 style=\'color:red\'><strong>邮箱格式错误</strong></h5>");
+                    $('.tooltip-show:eq(1)').tooltip('show');
+                    ok2=0;
+                }else{
+                    $(this).css('border','');
+                    $('#email').parent().attr('title',"<h5 style=\'color:red\'><strong>请输入邮箱</strong></h5>");
+                    $('.tooltip-show:eq(1)').tooltip('destroy');
+                    ok2=1;
+                }
+            });
+            $('#password').change(function () {
+                var password=$(this).val().trim();
+                var regepassword= /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$/; //最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符
+                if(regepassword.test(password)==false&&password) {
+                    $(this).css('border','1px solid red');
+                    $('#password').parent().attr('title',"<h5 style=\'color:red\'><strong>密码格式错误<br>最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符</strong></h5>");
+                    $('.tooltip-show:eq(2)').tooltip('show');ok3=0;
+                }else{
+                    $(this).css('border','');
+                    $('#password').parent().attr('title',"<h5 style=\'color:red\'><strong>请输入密码</strong></h5>");
+                    $('.tooltip-show:eq(2)').tooltip('destroy');ok3=1;
+                }
+            });
+            $('#rep_password').change(function () {
+                var rep_password=$(this).val().trim();
+                var password=$('#password').val().trim();
+                if(rep_password != password&&rep_password) {
+                    $(this).css('border','1px solid red');
+                    $('#rep_password').parent().attr('title',"<h5 style=\'color:red\'><strong>两次密码不一致</strong></h5>");
+                    $('.tooltip-show:eq(3)').tooltip('show');ok4=0;
+                }else{
+                    $(this).css('border','');
+                    $('#rep_password').parent().attr('title',"<h5 style=\'color:red\'><strong>请确认密码</strong></h5>");
+                    $('.tooltip-show:eq(3)').tooltip('destroy');ok4=1;
+
+                }
+            });
+            $.backstretch([
+                "images/2.jpg"
+                , "images/3.jpg"
+                , "images/1.jpg"
+            ], {duration: 3000, fade: 750});
+        });
+
+    </script>
+</head>
+<body style="background-color:rgba(0,0,0,0);">
+<nav class="nav navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <!--在移动端的时候导航条折叠起来，三横的样式出现，点击该样式可以显示或隐藏导航条上的内容-->
+            <button class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand">J视频</a>
+        </div>
+        <div id="menu" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/homepage">首页</a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li class="dropdown active"><a href="#">注册</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- 登录 -->
+<div class="container" style="padding: 100px 0;background-color:rgba(0,0,0,0);">
+    <div class="demo form-bg" style="padding: 20px 0;background-color:rgba(0,0,0,0);">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6">
+                    <div class="form-horizontal">
+                        <span class="heading" >用户注册</span>
+                        <div class="form-group">
+                            <div class="tooltip-show" data-toggle="tooltip"  data-placement="bottom" data-html="true" title="<h5 style='color:red'><strong>请输入用户名</strong></h5>">
+                                <input type="text" id="user" class="form-control"  placeholder="用户名">
+                                <span id="user_pic" class="glyphicon glyphicon-user"></span>
+                            </div>
+                        </div>
+                        <div class="form-group help">
+                            <div  class="tooltip-show" data-toggle="tooltip"  data-placement="bottom" data-html="true"  title="<h5 style='color:red'><strong>请输入邮箱</strong></h5>">
+                                <input type="email"  id="email" class="form-control"  placeholder="邮　箱">
+                                <span id="em_pic" class="glyphicon glyphicon-envelope"></span>
+                            </div>
+                        </div>
+                        <div class="form-group help">
+                            <div  class="tooltip-show" data-toggle="tooltip"  data-placement="bottom" data-html="true"  title="<h5 style='color:red'><strong>请输入密码</strong></h5>">
+                                <input type="text"  id="password" class="form-control"  placeholder="密　码">
+                                <span id="pwd_pic" class="glyphicon glyphicon-font"></span>
+                            </div>
+                        </div>
+                        <div class="form-group help">
+                            <div  class="tooltip-show" data-toggle="tooltip"  data-placement="bottom" data-html="true"  title="<h5 style='color:red'><strong>请确认密码</strong></h5>">
+                                <input type="text"  id="rep_password" class="form-control"  placeholder="确认密码">
+                                <span id="repwd_pic" class="glyphicon glyphicon-bold"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-default" id="register_btn">注册</button>
+                            <button type="submit" class="btn btn-primary" id="goto_login">前往登录</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
