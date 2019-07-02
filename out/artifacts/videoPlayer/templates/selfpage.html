@@ -217,11 +217,6 @@
                                 }
                             }
                         });
-                        /*var fr = new FileReader();
-                        var $img = $('card img:eq(0)');
-                        var imgUrl = fr.readAsDataURL(new Blob(['@ViewBag.path'], { type: "text/plain" }));
-                        $img.attr('src', imgUrl);*/
-                        //$('.card img:eq(0)').attr("src",URL.createObjectURL(this.files[0]));
                     }
                 }
             }
@@ -233,19 +228,23 @@
             var y = dd.getFullYear();
             var m = dd.getMonth()+1;//获取当前月份的日期
             var d = dd.getDate();
-            return y+'-'+(m<10?'0'+m:m)+'-'+d;
+            if(d<10){
+                return y+'-'+(m<10?'0'+m:m)+'-'+'0'+d;
+            }else{
+                return y+'-'+(m<10?'0'+m:m)+'-'+d;
+            }
         }
 
         $('.name').html(name);
         if(name){
             $.ajax({
                 url:"/lookhistory",
-                data:{name:name,},
+                data:{name:name},
                 async:true,
                 cache:false,
                 type:"POST",
                 success:function(result){
-                    /* alert(result.name+result.passwd);*/
+                     /*alert(result);*/
                     //array按时间排序
                     result.sort(function (b, a) { return new Date(a.date).getTime() - new Date(b.date).getTime() });
                     if(result){
@@ -254,7 +253,7 @@
                             var nowdate = parseInt(getDateStr(0).replace(/-/g, ""));
                             var yesdate = parseInt(getDateStr(-1).replace(/-/g, ""));
                             var hisdate = parseInt(result[i].date.substring(0, 10).replace(/-/g, ""));
-                            /*console.log(nowdate+' '+yesdate+' '+hisdate)*/
+                            console.log(nowdate+' '+yesdate+' '+hisdate)
                             if (nowdate == hisdate) {
                                 has1 = 1;
                                 $('#today').append('<hr style="opacity=0.1">' +

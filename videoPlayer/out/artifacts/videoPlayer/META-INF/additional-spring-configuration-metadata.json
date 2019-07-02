@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "spring.datasource.filters",
-      "type": "java.lang.String",
-      "description": "Description for spring.datasource.filters."
-  }
-] }
