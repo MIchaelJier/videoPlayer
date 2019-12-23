@@ -183,8 +183,8 @@
         $('#file').on('change',function () {
             if($('#file').val()!="") {
                 var photo = $(this).val();
-                if (!/\.(jpg)$/.test(photo)) {
-                    alert("头像只支持jpg格式");
+                if (!/\.(jpg|png)$/.test(photo)) {
+                    alert("头像只支持jpg和png格式");
                     return false;
                 } else {
                     if(this.files[0].size>204800) {

@@ -25,3 +25,4 @@ server:
   tomcat:
     max-http-post-size: -1
 
+  port: 1001
